@@ -51,7 +51,7 @@ end
 
 
 """
-The "envelope" of minimum and maximum allowable demands at each time pont, with a location for the demand.
+The "envelope" of minimum and maximum allowable demands at each time point, with a location for the demand.
 
 # Arguments
 - `demand :: BevDemand{T,L}`: the demand
@@ -230,7 +230,7 @@ The ".mat" file is output from EVI-Pro tool.
 """
 function populate_BEV_demand(data_location :: String) :: Array{BevDemand{Time,String}}
     full_data = matread(data_location)["FlexibleDemand"]
-    
+
     dim = size(full_data["AC_chargeratemax"])
     num_el = max(dim[1],dim[2])
 
@@ -270,7 +270,7 @@ function populate_BEV_demand(data_location :: String) :: Array{BevDemand{Time,St
                 range(1,num)]
         time_stamp_loc = [Time(temp_time_loc[j][1],temp_time_loc[j][2]) for j in range(1,num)]
         locations = TimeArray(time_stamp_loc, loc_tuples)
-        
+
         #Processing the data for consumption
         dim = size(full_data["consumptions"][1]["time_stamp"])
         num = max(dim[1],dim[2])
@@ -279,11 +279,11 @@ function populate_BEV_demand(data_location :: String) :: Array{BevDemand{Time,St
         time_stamp = [Time(temp_time[j][1],temp_time[j][2]) for j in range(1,num)]
         cons_val = [full_data["consumptions"][i]["consumptions_rates"][k] for k in (1:num)]
         consumptions = TimeArray(time_stamp,cons_val)
-        
+
         # Adding remaining attributes
         capacity = (min=full_data["storagemin"][i],max =full_data["storagemax"][i])
-        rate = (ac=(min= 0.0, max = full_data["AC_chargeratemax"][i]), 
-            dc=(min=0.0,max=full_data["DC_chargeratemax"][i])) 
+        rate = (ac=(min= 0.0, max = full_data["AC_chargeratemax"][i]),
+            dc=(min=0.0,max=full_data["DC_chargeratemax"][i]))
         efficiency = (in=full_data["chargeEfficiency"][i],out=full_data["dischargeEfficiency"][i])
         timeboundary = nothing
 
